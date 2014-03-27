@@ -8,28 +8,8 @@ import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UDP extends Thread
+public class UDP
 {
-	int port;
-	
-	public UDP(int port)
-	{
-		this.port = port;
-	}
-	
-	public void run()
-	{
-		int i = 0;
-		while (i++ < 10) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			System.out.println(i);
-		}
-	}
-	
 	public static void main(String[] args) throws IOException
 	{
 		// Receives the arguments
@@ -46,10 +26,10 @@ public class UDP extends Thread
 		
 		brFile.close();
 		
-		Sender s = new Sender(Integer.parseInt(args[0]), processToPort);
-		s.start();
-		
 		Listener l = new Listener(Integer.parseInt(args[0]), processToPort);
 		l.start();
+		
+		Sender s = new Sender(Integer.parseInt(args[0]), processToPort, l);
+		s.start();
 	}
 }
