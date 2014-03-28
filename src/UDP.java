@@ -14,6 +14,8 @@ public class UDP
 	{
 		// Receives the arguments
 		// 0 : processId
+		// 1 : mean delay (the delay will be in the range 0 - 2 * delay) in milliseconds
+		// 2 : probability with which the messages are dropped
 		
 		// The input file that contains the list of processId and its corresponding port
 		BufferedReader brFile = new BufferedReader(new FileReader("portIds.txt"));
@@ -29,7 +31,7 @@ public class UDP
 		Listener l = new Listener(Integer.parseInt(args[0]), processToPort);
 		l.start();
 		
-		Sender s = new Sender(Integer.parseInt(args[0]), processToPort, l);
+		Sender s = new Sender(Integer.parseInt(args[0]), processToPort, l, Integer.parseInt(args[1]), Double.parseDouble(args[2]));
 		s.start();
 	}
 }

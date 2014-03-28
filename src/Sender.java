@@ -12,19 +12,22 @@ public class Sender extends Thread
 	Map<Integer, Integer> processToPort;
 	Listener listener;
 	int sentCount;
+	int delay;
+	double probability;
 	
-	public Sender(int processId, Map<Integer, Integer> processToPort, Listener listener)
+	public Sender(int processId, Map<Integer, Integer> processToPort, Listener listener, int delay, double probability)
 	{
 		this.processId = processId;
 		this.processToPort = processToPort;
 		this.listener = listener;
+		this.delay = delay;
+		this.probability = probability;
 		sentCount = 0;
 	}
 	
 	@Override
 	public void run()
 	{
-		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String str;
 		DatagramSocket datagramSocket = null;
@@ -50,8 +53,17 @@ public class Sender extends Thread
 							DatagramPacket packet = new DatagramPacket(buffer, 
 									   buffer.length,
 									   address,
-									   processToPort.get(i));	
-							datagramSocket.send(packet);
+									   processToPort.get(i));
+							
+							//Drop messages with the probability specified in the input
+							double toSend = Math.random();
+							if (toSend > probability) {
+								
+								//Introducing a random delay in the range 0, 2 * delay
+								Thread.sleep((long) Math.ceil((Math.random() * delay * 2)));
+								
+								datagramSocket.send(packet);
+							}
 						}
 					}
 					
