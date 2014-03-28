@@ -4,6 +4,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -15,14 +16,18 @@ public class Listener extends Thread
 	Map<Integer, Set<Integer>> messagesFromProcesses;
 	Lock lock;
 	int[] vectorTime;
+	List<String> messageQueue;
+	Lock messageQueueLock;
 	
-	public Listener(int processId, Map<Integer, Integer> processToPort, Lock lock, int[] vectorTime)
+	public Listener(int processId, Map<Integer, Integer> processToPort, Lock lock, int[] vectorTime, List<String> messageQueue, Lock messageQueueLock)
 	{
 		this.processId = processId;
 		this.processToPort = processToPort;
 		this.lock = lock;
 		this.vectorTime = vectorTime;
 		messagesFromProcesses  = new HashMap<Integer, Set<Integer>>();
+		this.messageQueue = messageQueue;
+		this.messageQueueLock = messageQueueLock;
 		
 		for (int i : processToPort.keySet()) {
 			messagesFromProcesses.put(i, new HashSet<Integer>());
@@ -50,7 +55,9 @@ public class Listener extends Thread
 						continue;
 					}
 					
-					System.out.println(new String(buffer));
+					while(!messageQueueLock.tryLock());
+					messageQueue.add(new String(buffer));
+					messageQueueLock.unlock();
 					
 					sendAcknowledgement(Integer.parseInt(strList[1].trim()), Integer.parseInt(strList[2].trim()));
 				}

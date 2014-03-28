@@ -44,9 +44,14 @@ public class Sender extends Thread
 				
 				sentCount++;
 				
+				// Acquire the lock and update the timestamp
+				while(!lock.tryLock());
+				vectorTime[processId - 1] = vectorTime[processId - 1] + 1;
+				lock.unlock();
+				
 				// The first part of the list is the message, to which we append the processId to identify the
 				// sender at the receiver
-				byte[] buffer = (str + ":" + processId + ":" + sentCount).getBytes();
+				byte[] buffer = (str + ":" + processId + ":" + sentCount + ":" + UDP.getTimeStamp(vectorTime)).getBytes();
 				
 				// Localhost : all processes on the same machine
 				InetAddress address = InetAddress.getByName("localhost");
@@ -54,6 +59,10 @@ public class Sender extends Thread
 				boolean allReceived = false;
 				while (!allReceived) {
 					for (int i : processToPort.keySet()) {
+						if (i == processId) {
+							continue;
+						}
+						
 						if (!listener.acknowledgementReceived(i, sentCount)) {
 							DatagramPacket packet = new DatagramPacket(buffer, 
 									   buffer.length,
@@ -76,6 +85,9 @@ public class Sender extends Thread
 					
 					allReceived = true;
 					for (int i : processToPort.keySet()) {
+						if (i == processId) {
+							continue;
+						}
 						if (!listener.acknowledgementReceived(i, sentCount)) {
 							allReceived = false;
 						}
