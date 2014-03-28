@@ -36,25 +36,33 @@ public class Sender extends Thread
 				
 				sentCount++;
 				
-				// The message is ':' separated. The format is 'message : destination processId'
-				String[] strList = str.split(":");
-				
 				// The first part of the list is the message, to which we append the processId to identify the
 				// sender at the receiver
-				byte[] buffer = (strList[0] + ":" + processId + ":" + sentCount).getBytes();
+				byte[] buffer = (str + ":" + processId + ":" + sentCount).getBytes();
 				
 				// Localhost : all processes on the same machine
 				InetAddress address = InetAddress.getByName("localhost");
 				
-				// The second part of the input is the destination
-				DatagramPacket packet = new DatagramPacket(buffer, 
-														   buffer.length,
-														   address,
-														   processToPort.get(Integer.parseInt(strList[1])));
-				
-				while (!listener.acknowledgementReceived(Integer.parseInt(strList[1]), sentCount)) {
-					datagramSocket.send(packet);
+				boolean allReceived = false;
+				while (!allReceived) {
+					for (int i : processToPort.keySet()) {
+						if (!listener.acknowledgementReceived(i, sentCount)) {
+							DatagramPacket packet = new DatagramPacket(buffer, 
+									   buffer.length,
+									   address,
+									   processToPort.get(i));	
+							datagramSocket.send(packet);
+						}
+					}
+					
 					Thread.sleep(1000);
+					
+					allReceived = true;
+					for (int i : processToPort.keySet()) {
+						if (!listener.acknowledgementReceived(i, sentCount)) {
+							allReceived = false;
+						}
+					}
 				}
 			}	
 		} catch (Exception e) {
