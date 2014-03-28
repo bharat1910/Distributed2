@@ -6,17 +6,22 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 
 public class Listener extends Thread
 {
 	int processId;
 	Map<Integer, Integer> processToPort;
 	Map<Integer, Set<Integer>> messagesFromProcesses;
+	Lock lock;
+	int[] vectorTime;
 	
-	public Listener(int processId, Map<Integer, Integer> processToPort)
+	public Listener(int processId, Map<Integer, Integer> processToPort, Lock lock, int[] vectorTime)
 	{
 		this.processId = processId;
 		this.processToPort = processToPort;
+		this.lock = lock;
+		this.vectorTime = vectorTime;
 		messagesFromProcesses  = new HashMap<Integer, Set<Integer>>();
 		
 		for (int i : processToPort.keySet()) {

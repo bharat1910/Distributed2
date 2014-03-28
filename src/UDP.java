@@ -7,6 +7,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class UDP
 {
@@ -21,6 +23,8 @@ public class UDP
 		BufferedReader brFile = new BufferedReader(new FileReader("portIds.txt"));
 		String str;
 		Map<Integer, Integer> processToPort = new HashMap<Integer, Integer>();
+		int[] vectorTime = new int[processToPort.size()];
+		Lock lock = new ReentrantLock();
 		
 		while ((str = brFile.readLine()) != null) {
 			processToPort.put(Integer.parseInt(str.split(" ")[0]), Integer.parseInt(str.split(" ")[1]));
@@ -28,10 +32,10 @@ public class UDP
 		
 		brFile.close();
 		
-		Listener l = new Listener(Integer.parseInt(args[0]), processToPort);
+		Listener l = new Listener(Integer.parseInt(args[0]), processToPort, lock, vectorTime);
 		l.start();
 		
-		Sender s = new Sender(Integer.parseInt(args[0]), processToPort, l, Integer.parseInt(args[1]), Double.parseDouble(args[2]));
+		Sender s = new Sender(Integer.parseInt(args[0]), processToPort, l, Integer.parseInt(args[1]), Double.parseDouble(args[2]), lock, vectorTime));
 		s.start();
 	}
 }

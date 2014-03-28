@@ -4,6 +4,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
 
 
 public class Sender extends Thread
@@ -14,14 +15,18 @@ public class Sender extends Thread
 	int sentCount;
 	int delay;
 	double probability;
+	Lock lock;
+	int[] vectorTime;
 	
-	public Sender(int processId, Map<Integer, Integer> processToPort, Listener listener, int delay, double probability)
+	public Sender(int processId, Map<Integer, Integer> processToPort, Listener listener, int delay, double probability, Lock lock, int[] vectorTime)
 	{
 		this.processId = processId;
 		this.processToPort = processToPort;
 		this.listener = listener;
 		this.delay = delay;
 		this.probability = probability;
+		this.lock = lock;
+		this.vectorTime = vectorTime;
 		sentCount = 0;
 	}
 	
