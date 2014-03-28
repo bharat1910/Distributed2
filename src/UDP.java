@@ -35,7 +35,7 @@ public class UDP
 		Listener l = new Listener(Integer.parseInt(args[0]), processToPort, lock, vectorTime);
 		l.start();
 		
-		Sender s = new Sender(Integer.parseInt(args[0]), processToPort, l, Integer.parseInt(args[1]), Double.parseDouble(args[2]), lock, vectorTime));
+		Sender s = new Sender(Integer.parseInt(args[0]), processToPort, l, Integer.parseInt(args[1]), Double.parseDouble(args[2]), lock, vectorTime);
 		s.start();
 	}
 }
