@@ -23,7 +23,7 @@ public class PublisherTotal extends Thread
 	{
 		while(true) {
 			while(!messageQueueLock.tryLock());
-				while (!messageQueue.isEmpty()) {
+				if (!messageQueue.isEmpty()) {
 					if (messageQueue.peek().priority == seen + 1) {
 						System.out.println(messageQueue.remove().s);
 						seen++;
