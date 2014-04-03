@@ -17,11 +17,13 @@ public class Sequencer
 	public static void main(String[] args) throws NumberFormatException, IOException
 	{
 		// The input file that contains the list of processId and its corresponding port
-		BufferedReader brFile = new BufferedReader(new FileReader("portIds.txt"));
+		BufferedReader brFile = new BufferedReader(new FileReader(args[0]));
 		String str;
 		Map<Integer, Integer> processToPort = new HashMap<Integer, Integer>();
 		int priority = 0;
 		Map<String, Integer> messages = new HashMap<String, Integer>();
+		
+		brFile.readLine();
 		
 		while ((str = brFile.readLine()) != null) {
 			processToPort.put(Integer.parseInt(str.split(" ")[0]), Integer.parseInt(str.split(" ")[1]));
