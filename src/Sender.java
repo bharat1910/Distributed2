@@ -56,6 +56,8 @@ public class Sender extends Thread
 				// Localhost : all processes on the same machine
 				InetAddress address = InetAddress.getByName("localhost");
 				
+				System.out.println(new String(buffer));
+				
 				boolean allReceived = false;
 				while (!allReceived) {
 					for (int i : processToPort.keySet()) {
