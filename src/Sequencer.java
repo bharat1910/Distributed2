@@ -21,6 +21,7 @@ public class Sequencer
 		String str;
 		Map<Integer, Integer> processToPort = new HashMap<Integer, Integer>();
 		int priority = 0;
+		Map<String, Integer> messages = new HashMap<String, Integer>();
 		
 		while ((str = brFile.readLine()) != null) {
 			processToPort.put(Integer.parseInt(str.split(" ")[0]), Integer.parseInt(str.split(" ")[1]));
@@ -42,7 +43,13 @@ public class Sequencer
 				buffer = packet.getData();
 				int fromProcess = Integer.parseInt(new String(buffer).split(":")[0].trim());
 				
-				priority = priority + 1;
+				if (messages.containsKey(new String(buffer))) {
+					priority = messages.get(new String(buffer));
+				} else {
+					priority = priority + 1;
+					messages.put(new String(buffer), priority);
+				}
+				
 				System.out.println("Assigned priority : " + priority + " to a message from " + fromProcess);
 				buffer = ("ack:" + 7 + ":" + new String(buffer).split(":")[1].trim() + ":" + priority).getBytes();
 				
