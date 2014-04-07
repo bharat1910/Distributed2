@@ -2,6 +2,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
+/*
+ * Publisher Thread is responsible for pruning messages 
+ * received by the Listner; if the vector timestamp of 
+ * the message is not matched with the expected value
+ * then the Publisher keeps the message in the buffers and 
+ * publishes it only when the matching happens.   
+ */
 
 public class Publisher extends Thread
 {

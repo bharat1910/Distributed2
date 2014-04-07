@@ -12,6 +12,12 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/*
+ * Sequencer is a seperate process running on port number 9007.
+ * It assigns sequence number to the incoming messages and sends 
+ * them appropriately.
+ */
+
 public class Sequencer
 {
 	public static void main(String[] args) throws NumberFormatException, IOException

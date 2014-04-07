@@ -9,6 +9,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 
+/*
+ * Listner thread for collecting messages
+ * sent by other processes.
+ */
 public class Listener extends Thread
 {
 	int processId;

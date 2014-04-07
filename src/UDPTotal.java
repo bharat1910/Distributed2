@@ -10,6 +10,12 @@ import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/*
+* UDPTotal is the initiator class for the Listner, Sender and Publisher
+* threads while implementing total ordering. It reads the data passed as 
+* arguments and initializes the threads accordingly.
+*/
+
 public class UDPTotal
 {
 	public void start(String[] args) throws IOException

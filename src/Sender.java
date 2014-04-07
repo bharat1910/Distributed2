@@ -6,6 +6,12 @@ import java.net.InetAddress;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
+/*
+ * Sender thread is responsible for sending the messages
+ * read from the console. The sender maintains the vector timestamp
+ * of messages sent and keeps sending the message until the ACK for
+ * it is received.
+ */
 
 public class Sender extends Thread
 {

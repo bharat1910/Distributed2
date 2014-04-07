@@ -10,6 +10,12 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 
+
+/*
+ * Listner thread for collecting messages
+ * sent by other processes. This thread is used while 
+ * implementing total ordering of messages. 
+ */
 public class ListenerTotal extends Thread
 {
 	int processId;
@@ -32,6 +38,7 @@ public class ListenerTotal extends Thread
 		for (int i : processToPort.keySet()) {
 			messagesFromProcesses.put(i, new HashSet<Integer>());
 		}
+		// 7: processId of the sequencer.
 		messagesFromProcesses.put(7, new HashSet<Integer>());
 	}
 	

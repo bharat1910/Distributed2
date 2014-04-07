@@ -1,6 +1,14 @@
 import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 
+/*
+ * PublisherTotal Thread is responsible for pruning messages 
+ * received by the Listner; if the sequence number of 
+ * the message is not matched with the expected value
+ * then the PublisherTotal keeps the message in the buffers and 
+ * publishes it only when the matching happens.   
+ */
+
 public class PublisherTotal extends Thread
 {
 	int published = 0;

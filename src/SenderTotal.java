@@ -6,6 +6,12 @@ import java.net.InetAddress;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
+/*
+ * SenderTotal thread is responsible for sending the messages
+ * read from the console. The sender maintains the vector timestamp
+ * of messages sent and keeps sending the message to the sequencer 
+ * until the ACK for it is received.
+ */
 
 public class SenderTotal extends Thread
 {

@@ -8,6 +8,12 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/*
+ * UDP is the initiator class for the Listner, Sender and Publisher
+ * threads. It reads the data passed as arguments and initializes the threads
+ * accordingly.
+ */
+
 public class UDP
 {
 	public void start(String[] args) throws IOException
