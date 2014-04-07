@@ -1,0 +1,41 @@
+1) Description of Total and Causal Ordering (copied from Readme.txt)
+Total Ordering - we have used a sequencer to generated multicast messages that are totally ordered. Before any process can send a message, it gets the sequence number for the message from the sequencer. At each process, the listener maintains a queue of messages received at any point of time. Once the appropriate message, one with sequencer number = number seen so far at the process + 1, shows up, it is processed. Post this, the queue is checked if the next set of messages can be delivered as well.
+
+Causal Ordering - This is achieved by the use of vector timestamps. At the listener, for each incoming message, a check is performed to see if this is the next message from the process and that it does not violate any causal constraints. This is the code snippet highlighting the algorithm used :
+	public boolean canBePublished(String s)
+	{
+		int fromProcess = Integer.parseInt(s.split(":")[1]);
+		int[] messageTimestamp = getVectorListFromString(s.split(":")[3]);
+
+		for (int i=0; i<vectorTime.length; i++) {
+			if (i != (fromProcess - 1)) {
+				if(messageTimestamp[i] > vectorTime[i]) {
+					return false;
+				}
+			}
+		}
+
+		if (messageTimestamp[fromProcess - 1] == vectorTime[fromProcess - 1] + 1) {
+			while(!lock.tryLock());
+			vectorTime[fromProcess - 1] = vectorTime[fromProcess - 1] + 1;
+			lock.unlock();
+			return true;
+		} else {
+			return false;
+		}
+	}
+Basically, for every process that is not the one which sends the message, the corresponding value in the vector timestamp at the receiving process must be greater than the one in the timestamp shown by the message. For the value corresponding to the receiving process the value in the message must be one greater than the value seen at the process.
+
+2) Implementation of mean delay :
+The mean delay is a random number between 0 and 2 * mean_delay (the parameter entered by the user). Code snippet :
+
+Thread.sleep((long) Math.ceil((Math.random() * delay * 2)));
+
+3) Message drop with a user specified probabilty :
+This is simple - A random number between 0 and 1 is generated. If it is greater than the user specified probabilty, the message is sent with (using the mean delay above), else it is dropped. Code snippet :
+	double toSend = Math.random();
+	if (toSend > probability) {
+		//Introducing a random delay in the range 0, 2 * delay
+		Thread.sleep((long) Math.ceil((Math.random() * delay * 2)));
+		datagramSocket.send(packet);
+	}
