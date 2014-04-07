@@ -40,7 +40,7 @@ This is simple - A random number between 0 and 1 is generated. If it is greater 
 		datagramSocket.send(packet);
 	}
 	
-4) A locking mechanism is used at the Sequencer to ensure that each message gets a unique number. It is also used while updating the timestamp in case of causal ordering (to ensure the sender and receiver dont update it at the same time) and for the queues containing the messages in total and causal ordering - to ensure that that the Listener and Publisher dont make changes to it simultaneously (which will result in a Concurrent Exception). Code snippet :
+4) A locking mechanism is used at the Sequencer to ensure that each message gets a unique number. It is also used while updating the timestamp in case of causal ordering (to ensure the sender and receiver dont update it at the same time) and for the queues containing the messages in total and causal ordering - to ensure that that the Listener and Publisher dont make changes to it simultaneously (which will result in a Concurrent Access Exception). Code snippet :
 	// Acquire the lock and update the timestamp
 	while(!lock.tryLock());
 	vectorTime[processId - 1] = vectorTime[processId - 1] + 1;
