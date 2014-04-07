@@ -32,10 +32,20 @@ The mean delay is a random number between 0 and 2 * mean_delay (the parameter en
 Thread.sleep((long) Math.ceil((Math.random() * delay * 2)));
 
 3) Message drop with a user specified probabilty :
-This is simple - A random number between 0 and 1 is generated. If it is greater than the user specified probabilty, the message is sent with (using the mean delay above), else it is dropped. Code snippet :
+This is simple - A random number between 0 and 1 is generated. If it is greater than the user specified probabilty, the message is sent (using the mean delay above), else it is dropped. Code snippet :
 	double toSend = Math.random();
 	if (toSend > probability) {
 		//Introducing a random delay in the range 0, 2 * delay
 		Thread.sleep((long) Math.ceil((Math.random() * delay * 2)));
 		datagramSocket.send(packet);
 	}
+	
+4) A locking mechanism is used at the Sequencer to ensure that each message gets a unique number. It is also used while updating the timestamp in case of causal ordering (to ensure the sender and receiver dont update it at the same time) and for the queues containing the messages in total and causal ordering - to ensure that that the Listener and Publisher dont make changes to it simultaneously (which will result in a Concurrent Exception). Code snippet :
+	// Acquire the lock and update the timestamp
+	while(!lock.tryLock());
+	vectorTime[processId - 1] = vectorTime[processId - 1] + 1;
+	lock.unlock();
+	
+	while(!messageQueueLock.tryLock());
+	messageQueue.add(new String(buffer));
+	messageQueueLock.unlock();
